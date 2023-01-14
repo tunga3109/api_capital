@@ -3,13 +3,26 @@ list of endpoints here : https://open-api.capital.com
 API documantation here: https://capital.com/api-development-guide
 '''
 import requests
-from config import API_KEY, login, password
+import json
+import sys
+
 import pprint
 from datetime import datetime
 
-now = datetime.now() # current date and time
+#from config import API_KEY, login, password
 
-from datetime import datetime
+now = datetime.now() # current date and time
+#from config import *
+
+BASE_DEMO_URL = 'https://demo-api-capital.backend-capital.com' 
+BASE_LIVE_URL = 'https://api-capital.backend-capital.com'
+
+print('------WELCOME TO CAPITAL API----------')
+login = input('YOUR LOGIN: ')
+password = input('YOUR PASSWORD: ')
+api_key = input('YOUR API KEY: ')
+if login == 'q' or password == 'q' or api_key == 'q':
+    sys.exit()
 
 #UTC time
 utc_datetime  = datetime.utcnow()
@@ -31,23 +44,90 @@ session = requests.Session()
 response = session.post(
     URL + '/api/v1/session',
     json={'identifier': login, 'password': password},
-    headers={'X-CAP-API-KEY': API_KEY}
+    headers={'X-CAP-API-KEY': api_key}
 )
 
 CST = response.headers['CST']
 X_SECURITY_TOKEN = response.headers['X-SECURITY-TOKEN']
 
-pp = pprint.PrettyPrinter(indent=4)
-#pp.pprint(response.json())
 
-#Switches active accounts, optionally setting the default account.
-#response = session.put(
-#    URL + '/api/v1/session',
-#    json={"accountId": '130161024014820674'},
-#    headers={'CST': CST, 'X-SECURITY-TOKEN': X_SECURITY_TOKEN} 
-#)
-#
-#pp.pprint(response.json())
+def account_info():
+    '''Returns account preferences'''
+    response = session.get(
+    URL + '/api/v1/session',
+    headers={'CST': CST, 'X-SECURITY-TOKEN': X_SECURITY_TOKEN} 
+    )
+
+    print(json.dumps(response.json(), indent=4))
+
+
+def get_preferences():
+
+    '''Returns account preferences'''
+    response = session.get(
+        URL + '/api/v1/accounts/preferences',
+        headers={'CST': CST, 'X-SECURITY-TOKEN': X_SECURITY_TOKEN} 
+    )
+
+    print(json.dumps(response.json(), indent=4))
+
+def switch_account():
+    '''Switches active accounts, optionally setting the default account'''
+    account_id = input('ACCOUNT ID (q to cancel): ')
+    if account_id == 'q':
+        account_menu()
+    response = session.put(
+    URL + '/api/v1/session',
+    json={"accountId": account_id},
+    headers={'CST': CST, 'X-SECURITY-TOKEN': X_SECURITY_TOKEN} 
+)
+    print(json.dumps(response.json(), indent=4))
+
+def account_menu():
+    '''Account menu'''
+    while True:
+        choose = input('\nCHOOSE THE ACTION:\n\t1 - ACCOUNT INFORMATION\n\t2 - ACCOUNT PREFERENCES\n\t3 - SWITCH ACCOUNT\n\tq - BACK TO MENU\n: ')
+        if choose == '1':
+            account_info()
+        elif choose == '2':
+            get_preferences()
+        elif choose == '3':
+            switch_account()
+        elif choose == 'q':
+            main_menu()
+        else:
+            print('TRY AGAIN')
+            account_menu()
+
+def position_menu():
+    pass
+
+
+def main_menu():
+    while True:
+        choose = input('\tCHOOSE THE ACTION:\n\t1 - ACCOUNT\n\t2 - POSITIONS\n\tq - QUIT\n: ')
+        if choose == '1':
+            account_menu()
+        elif choose == '2':
+            position_menu()
+        elif choose == 'q':
+            sys.exit()
+        else:
+            print('TRY AGAIN')
+            main_menu()
+
+if response.status_code == 200:
+    CST = response.headers['CST']
+    X_SECURITY_TOKEN = response.headers['X-SECURITY-TOKEN']
+
+    print('SUCCESSFULLY')
+    main_menu()
+    
+else:
+    print('UNSUCCESSFULLY')
+    print('Please double-check credentials'.upper())
+            
+
 
 #Returns the user's session details and optionally tokens.
 #response = session.get(
@@ -77,14 +157,7 @@ pp = pprint.PrettyPrinter(indent=4)
 #
 #    print(response.json())
 
-#Returns account preferences
-#def get_preferences():
-#    response = session.get(
-#        URL + '/api/v1/accounts/preferences',
-#        headers={'CST': CST, 'X-SECURITY-TOKEN': X_SECURITY_TOKEN} 
-#    )
-#
-#    print(response.json())
+
 
 #Returns all open positions for the active account. Here the dealId and dealReference values have the 'p_' prefix.
 #def list_of_trade_ids():
@@ -146,7 +219,7 @@ pp = pprint.PrettyPrinter(indent=4)
 
 
 #Closes one or more positions
-def close_position(dealId):
+def close_position_all(dealId):
     response = session.delete(
     URL + '/api/v1/positions/',
     json={"dealId": dealId},
@@ -165,7 +238,7 @@ def close_all_positions():
     )
 
     for trade_id in response.json()["positions"]:
-        close_position(trade_id['position']['dealId'])
+        close_position_all(trade_id['position']['dealId'])
 
 
 #Returns all watchlists belonging to the active account.

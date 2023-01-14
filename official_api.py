@@ -1,54 +1,60 @@
 import http.client
-import json
 
-from Crypto.Cipher import PKCS1_v1_5 # Install via pip/pip3 install pycryptodome
-from Crypto.PublicKey import RSA
-from base64 import b64decode, b64encode
-
-from config import login, password, API_KEY
-
-URL = 'demo-api-capital.backend-capital.com' 
-
-conn = http.client.HTTPSConnection(URL)
-payload = ''
+conn = http.client.HTTPSConnection("demo-api-capital.backend-capital.com")
+payload = "{\n\t\"identifier\": \"tunga3109@gmail.com\", \n\t\"password\": \"Xuxin_10031999\"\n}"
 headers = {
-  'X-CAP-API-KEY': API_KEY
-}
-conn.request("GET", "/api/v1/session/encryptionKey", payload, headers)
-res = conn.getresponse()
-data = res.read()
-res_dict = json.loads(data.decode("utf-8"))
-
-enc_key = res_dict['encryptionKey']
-timestamp = res_dict['timeStamp']
-
-input = bytes(password + '|' + str(timestamp), encoding='UTF-8')
-input = b64encode(input)
-key = b64decode(bytes(enc_key, encoding='UTF-8'))
-key = RSA.importKey(key)
-cipher = PKCS1_v1_5.new(key)
-ciphertext = b64encode(cipher.encrypt(input))
-enc_pass = ciphertext.decode('utf-8') # Encrypted password
-
-payload = json.dumps({
-  "encryptedPassword": True,
-  "identifier": login,
-  "password": enc_pass 
-})
-
-headers = {
-  'X-CAP-API-KEY': API_KEY,
+  'X-CAP-API-KEY': 'Ydb8GV1oruPrsd4j',
   'Content-Type': 'application/json'
 }
-
 conn.request("POST", "/api/v1/session", payload, headers)
 res = conn.getresponse()
 data = res.read()
-res_dict_2 = json.loads(data.decode('utf-8'))
 headers = res.getheaders()
-print(json.dumps(dict(headers), sort_keys=True, indent=4))
-#print(json.dumps(res_dict_2, sort_keys=True, indent=4))
+print(headers)
+print(data.decode("utf-8"))
 
 
 
 
+#payload = "{\n    \"epic\": \"SILVER\",\n    \"direction\": \"BUY\",\n    \"size\": 1,\n    \"guaranteedStop\": true,\n    \"stopLevel\": 19,\n    \"profitLevel\": 24\n}"
+#headers = {
+#  'X-SECURITY-TOKEN': 'ZWPAaHU4eWiid1OEzVLdscpDk8nJBdJ',
+#  'CST': 'SNph3drJaxuS2O1Zk7tDhDyU',
+#  'Content-Type': 'application/json'
+#}
+#conn.request("POST", "/api/v1/positions", payload, headers)
+#res = conn.getresponse()
+#data = res.read()
+#print(data.decode("utf-8"))
+
+#payload = ''
+#headers = {
+#  'X-SECURITY-TOKEN': 'ZWPAaHU4eWiid1OEzVLdscpDk8nJBdJ',
+#  'CST': 'SNph3drJaxuS2O1Zk7tDhDyU',
+#  'Content-Type': 'application/json'
+#}
+#dealReference = input('DEAL REFERENCE: ')
+#conn.request("GET", f"/api/v1/confirms/{dealReference}", payload, headers)
+#res = conn.getresponse()
+#data = res.read()
+#print(data.decode("utf-8"))
+
+
+#006011e7-0055-311e-0000-0000804a1bd2
+#dealId = input(' DEAL ID: ')
+#conn.request("DELETE", f"/api/v1/positions/{dealId}", payload, headers)
+#res = conn.getresponse()
+#data = res.read()
+#print(data.decode("utf-8"))
+
+#payload = "{\n    \"guaranteedStop\": true,\n    \"stopLevel\": 18,\n    \"profitLevel\": 22\n}"
+#headers = {
+#  'X-SECURITY-TOKEN': 'ZWPAaHU4eWiid1OEzVLdscpDk8nJBdJ',
+#  'CST': 'SNph3drJaxuS2O1Zk7tDhDyU',
+#  'Content-Type': 'application/json'
+#}
+#dealId = input(' DEAL ID: ')
+#conn.request("PUT", f"/api/v1/positions/{dealId}", payload, headers)
+#res = conn.getresponse()
+#data = res.read()
+#print(data.decode("utf-8"))

@@ -7,11 +7,13 @@ API documantation here: https://capital.com/api-development-guide
 Here you should simply use the POST/session endpoint and mention the received 
 in the platform's Settings API key in the X-CAP-API-KEY header, login and password info in the identifier and password parameters.
 '''
+from turtle import Turtle
 import requests
 import pprint
 import sys
 from config import *
 from datetime import datetime
+import json
 
 BASE_DEMO_URL = 'https://demo-api-capital.backend-capital.com' 
 BASE_LIVE_URL = 'https://api-capital.backend-capital.com'
@@ -29,8 +31,8 @@ session = requests.Session() # Create session
 '''Returns the user's session details and optionally tokens.'''
 response = session.post(
     BASE_DEMO_URL + '/api/v1/session',
-    json={"encryptedPassword": False, 'identifier': '__Email(login)__', 'password': '___Password__'},
-    headers={'X-CAP-API-KEY': '__API_KEY__'}
+    json={"encryptedPassword": False, 'identifier': login, 'password': password},
+    headers={'X-CAP-API-KEY': API_KEY}
 )
 
 CST = response.headers['CST']
@@ -45,12 +47,12 @@ pp = pprint.PrettyPrinter(indent=4)
 def search_epic():
     epic_name = input('Paste the epic name: ')
     response = session.get(
-        BASE_DEMO_URL + '/api/v1/markets',
+        BASE_DEMO_URL + f'/api/v1/markets/',
         params={'searchTerm': epic_name},
         headers={'CST': CST, 'X-SECURITY-TOKEN': X_SECURITY_TOKEN} 
     )
 
-    pp.pprint(response.json())
+    print(json.dumps(response.json(), sort_keys=True, indent=4))
 
 
 '''Place the order'''
@@ -141,3 +143,6 @@ def get_prices():
         headers={'CST': CST, 'X-SECURITY-TOKEN': X_SECURITY_TOKEN}
     )
     pp.pprint(response.json())
+
+if __name__ == '__main__':
+    search_epic()

@@ -10,9 +10,16 @@ in the platform's Settings API key in the X-CAP-API-KEY header, login and passwo
 import requests
 import pprint
 import sys
-import time
+import json
 
 from config import *
+from datetime import date, datetime
+import time
+
+#UTC time
+utc_datetime  = datetime.utcnow()
+dt_now_str = utc_datetime.strftime("%Y-%m-%dT%H:%M:%S")
+time_now_str = utc_datetime.strftime("%H:%M:%S")
 
 BASE_DEMO_URL = 'https://demo-api-capital.backend-capital.com' 
 BASE_LIVE_URL = 'https://api-capital.backend-capital.com'
@@ -31,11 +38,21 @@ CST = response.headers['CST']
 X_SECURITY_TOKEN = response.headers['X-SECURITY-TOKEN']
 
 pp = pprint.PrettyPrinter(indent=4)
-#pp.pprint(response.json())
 
+def logging(func):
+
+    def wrapper():
+        from datetime import datetime
+        start = datetime.now().time()
+        end = datetime.now().time()
+        print(f'Start function {start}')
+        func()
+        print(f'End function {end}')
+    return wrapper
 
 
 '''Check the account information'''
+@logging
 def check_acc_info():
     response = session.get(
         BASE_DEMO_URL + '/api/v1/accounts',
@@ -47,16 +64,16 @@ def check_acc_info():
 
 
 '''Place the trade'''
-#trade_body = {
-#  "direction": "BUY",
-#  "epic": "LTCUSD", 
-#  "guaranteedStop": True, # or False
-#  "size": 1, #Numbers - without quotes
-#  'stopLevel' : 56.67, #Stop loss price. Numbers - without quotes
-#  "profitLevel": 60, } #Take profit price. Numbers - without quotes
-#
-#
-#
+trade_body = {
+  "direction": "BUY",
+  "epic": "LTCUSD", 
+  "guaranteedStop": False, # or False
+  "size": 1, #Numbers - without quotes
+  'stopLevel' : 48.67, #Stop loss price. Numbers - without quotes
+   } #Take profit price. Numbers - without quotes
+
+
+
 
 def place_the_trade(body):
     response = session.post(
@@ -107,7 +124,9 @@ def check_trade_by_deal_ref():
             headers={'CST': CST, 'X-SECURITY-TOKEN': X_SECURITY_TOKEN}
         )
     
-        pp.pprint(response.json()) # DealID in 'affectedDeals' array
+        if len(response.json()['affectedDeals']) == 0:
+            status = response.json()['dealStatus']
+            print(f'The order was {status}')
 
 
 
@@ -119,9 +138,19 @@ def list_of_trades():
         headers={'CST': CST, 'X-SECURITY-TOKEN': X_SECURITY_TOKEN}
         )
 
+    #print(json.dumps(response.json()['positions'], indent=4))
     for trade in response.json()['positions']:
-        #pp.pprint(f'{trade["market"]["instrumentName"]} - {trade["position"]["dealId"]} - {trade["market"]["updateTime"]}')
-        print(trade["position"]["dealId"])
+        dealid = trade['position']['dealId']
+        instrument_name = trade['market']['instrumentName']
+        print(f'{instrument_name} - {dealid}')
+
+    #print(type(response.json()['positions']))
+    #for trade in r['positions']:
+    #    #pp.pprint(f'{trade["market"]["instrumentName"]} - {trade["position"]["dealId"]} - {trade["market"]["updateTime"]}')
+    #    print(trade["position"]["dealId"])
+    
+
+
 
 
 '''Check opened trades'''
@@ -231,37 +260,56 @@ def delete_watchlist():
     pp.pprint(response.json())
 
 
-
-import matplotlib.pyplot as plt
-
-xdata = []
-ydata = []
-
-fig = plt.figure()
-ax = fig.add_subplot(111)
-fig.show()
-
-def show_graf():
-    plt.plot(xdata, ydata)
-    fig.canvas.draw()
-    plt.pause(1)
-
-
-def get_live_prices():
+def get_prices():
     epic_name = input('Paste the epic name: ')
-    while True:
-        response = session.get(
-            BASE_DEMO_URL + '/api/v1/markets',
-            params={'searchTerm': epic_name},
-            headers={'CST': CST, 'X-SECURITY-TOKEN': X_SECURITY_TOKEN} 
-        )
-        
-        upd_time = response.json()['markets'][0]['updateTime'][:-4]
-        price = response.json()['markets'][0]['offer']
+    response = session.get(
+        BASE_DEMO_URL + f'/api/v1/prices/{epic_name}',
+        params={'to': dt_now_str , 'resolution': 'MINUTE'},
+        headers={'CST': CST, 'X-SECURITY-TOKEN': X_SECURITY_TOKEN}
+    )
+
+    pp.pprint(response.json())
+
+    #for data in response.json()['prices']:
+    #    print(data)
 
 
-        xdata.append(upd_time)
-        ydata.append(price)
-        show_graf()
+if __name__ == '__main__':
+    #place_the_trade(trade_body)
+    check_trade_by_deal_ref()
+    #close_trade()
 
-        print(f'{upd_time} -> {price}')
+
+
+#import matplotlib.pyplot as plt
+#
+#xdata = []
+#ydata = []
+#
+#fig = plt.figure()
+#ax = fig.add_subplot(111)
+#fig.show()
+#
+#def show_graf():
+#    plt.plot(xdata, ydata)
+#    fig.canvas.draw()
+#    plt.pause(1)
+#
+#def get_live_prices():
+#    epic_name = input('Paste the epic name: ')
+#    while True:
+#        response = session.get(
+#            BASE_DEMO_URL + '/api/v1/markets',
+#            params={'searchTerm': epic_name},
+#            headers={'CST': CST, 'X-SECURITY-TOKEN': X_SECURITY_TOKEN} 
+#        )
+#        
+#        upd_time = response.json()['markets'][0]['updateTime'][:-4]
+#        price = response.json()['markets'][0]['offer']
+#
+#
+#        xdata.append(upd_time)
+#        ydata.append(price)
+#        show_graf()
+#
+#        print(f'{upd_time} -> {price}')

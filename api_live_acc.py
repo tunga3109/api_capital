@@ -3,7 +3,7 @@ list of endpoints here : https://open-api.capital.com
 API documantation here: https://capital.com/api-development-guide
 '''
 import requests
-import json
+import pprint
 
 from config import *
 
@@ -22,12 +22,8 @@ response = session.post(
 CST = response.headers['CST']
 X_SECURITY_TOKEN = response.headers['X-SECURITY-TOKEN']
 
-
-#data = json.dumps(response.json(), sort_keys=True, indent=4)
-#print(data)
-
-#pp = pprint.PrettyPrinter(indent=4)
-#pp.pprint(response.json())
+pp = pprint.PrettyPrinter(indent=4)
+pp.pprint(response.json())
 
 #Returns the transaction history.
 response = session.get(
@@ -35,14 +31,10 @@ response = session.get(
     params={'from': '2022-01-01T00:00:00' ,'to': '2022-04-01T00:00:00' ,'type': 'WITHDRAWAL'},
     headers={'CST': CST, 'X-SECURITY-TOKEN': X_SECURITY_TOKEN}
 )
-a = {'a': 'a', 'b': 'b'}
 
+#pp.pprint(response.json())
 
-for i in response.json()["transactions"]:
-    data_dict = {"currency": i["currency"], "reference": i["reference"], "size": i["size"]}
-    print(json.dumps(data_dict, sort_keys=True ,indent=4))
-    
-    
-    #data = json.dumps(data_dict, sort_keys=True, indent=4)
-    #print(data)
-
+#json with double quotes
+#data = response.json()
+#j = json.dumps(data)
+#print(j)

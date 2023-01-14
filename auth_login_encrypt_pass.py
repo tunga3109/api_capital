@@ -3,7 +3,7 @@ list of endpoints here : https://open-api.capital.com
 API documantation here: https://capital.com/api-development-guide
 '''
 import requests
-import json
+import pprint
 
 from Crypto.Cipher import PKCS1_v1_5
 from Crypto.PublicKey import RSA
@@ -44,7 +44,7 @@ key = RSA.importKey(key)
 cipher = PKCS1_v1_5.new(key)
 ciphertext = b64encode(cipher.encrypt(input))
 enc_pass = ciphertext.decode('utf-8') # Encrypted password
-
+print(enc_pass)
 
 '''
 Go to the POST /session endpoint, set true value for the encryptionKey parameter and mention the received 
@@ -57,8 +57,8 @@ response_1 = session.post(
 )
 
 #print(response_1.status_code) # Checking the status code
-data = json.dumps(response_1.json(), sort_keys=True, indent=4)
-print(data)
+pp = pprint.PrettyPrinter(indent=4)
+#pp.pprint(response_1.json())
 
 print('-' * 100)
 

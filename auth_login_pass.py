@@ -14,7 +14,6 @@ in the platform's Settings API key in the X-CAP-API-KEY header, login and passwo
 '''
 import requests
 import json
-
 from config import * 
 
 
@@ -33,8 +32,10 @@ response = session.post(
 CST = response.headers['CST']
 X_SECURITY_TOKEN = response.headers['X-SECURITY-TOKEN']
 
-data = json.dumps(response.json(), sort_keys=True, indent=4)
-print(data)
+if __name__ == '__main__':
+    
+    print(json.dumps(response.json(), indent=4))
+    print('-' * 100)
 
 
 
