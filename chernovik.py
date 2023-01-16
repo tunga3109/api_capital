@@ -156,10 +156,20 @@
 # prices()
 
 
+import requests
+import json
 
+response = requests.get(
+    'http://127.0.0.1:8000/api/v1/fighter/',
+    params={
+        'character_name': 'Jax'
+    }
+)
+
+print(json.dumps(response.json(), indent=4, sort_keys=True))
         
 
-
+# http://127.0.0.1:8000/api/v1/fighter/
         
         
         
