@@ -94,7 +94,8 @@ def open_position(body):
     )
 
     dealid = response.json()["dealReference"]
-    check_trade_by_deal_ref(dealid)
+    print(dealid)
+    # check_trade_by_deal_ref(dealid)
 # ---
 
 def check_trade_by_deal_ref(dealReference):
