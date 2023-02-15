@@ -1,4 +1,4 @@
-from capitalcom.client_demo import *
+from capitalcom import *
 from config import *
 import json
 
