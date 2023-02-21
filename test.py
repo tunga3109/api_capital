@@ -1,33 +1,29 @@
-import json
-import pprint
-import websockets
 import asyncio
-
-from call import CST, X_SECURITY_TOKEN
-
-
-demo = "wss://api-streaming-capital.backend-capital.com/connect"
-
-async def checkPrices():
-    async with websockets.connect(demo) as websocket:
-        req = {
-                "destination": "marketData.subscribe",
-                "correlationId": "1",
-                "cst": CST,
-                "securityToken": X_SECURITY_TOKEN,
-                "payload": { "epics": [ "BTCUSD"] }
-                    }
-        await websocket.send(json.dumps(req))
-        while True: 
-            response = json.loads(await websocket.recv())['payload']
-            pprint.pprint(response)
+import time
 
 
+async def fun1(x):
+    print(x**2)
+    await asyncio.sleep(3)
+    print('fun1 завершена')
 
-if __name__ == '__main__':
-    loop = asyncio.new_event_loop()
-    asyncio.set_event_loop(loop)
-    try:
-        asyncio.run(checkPrices())
-    except KeyboardInterrupt:
-        pass
+
+async def fun2(x):
+    print(x**0.5)
+    await asyncio.sleep(3)
+    print('fun2 завершена')
+
+
+async def main():
+    task1 = asyncio.create_task(fun1(4))
+    task2 = asyncio.create_task(fun2(4))
+
+    await task1
+    await task2
+
+
+print(time.strftime('%X'))
+
+asyncio.run(main())
+
+print(time.strftime('%X'))
