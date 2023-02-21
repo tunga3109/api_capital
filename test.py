@@ -3,7 +3,6 @@ import pprint
 import websockets
 import asyncio
 
-from config import API_KEY as ApiKey
 from call import CST, X_SECURITY_TOKEN
 
 
