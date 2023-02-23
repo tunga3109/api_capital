@@ -1,11 +1,33 @@
-from capitalcom.client_demo import *
-from config import *
+import json
+import pprint
+import websockets
+import asyncio
+
+from call import CST, X_SECURITY_TOKEN
 
 
-cl = Client(login, password, API_KEY)
-pos_dict = json.loads(cl.all_positions())['positions']
+demo = "wss://api-streaming-capital.backend-capital.com/connect"
 
-for i in pos_dict:
-    dealId = i['position']['dealId']
-    cl.close_position(dealid=dealId)
+async def checkPrices():
+    async with websockets.connect(demo) as websocket:
+        req = {
+                "destination": "marketData.subscribe",
+                "correlationId": "1",
+                "cst": CST,
+                "securityToken": X_SECURITY_TOKEN,
+                "payload": { "epics": [ "BTCUSD"] }
+                    }
+        await websocket.send(json.dumps(req))
+        while True: 
+            response = json.loads(await websocket.recv())['payload']
+            pprint.pprint(response)
 
+
+
+if __name__ == '__main__':
+    loop = asyncio.new_event_loop()
+    asyncio.set_event_loop(loop)
+    try:
+        asyncio.run(checkPrices())
+    except KeyboardInterrupt:
+        pass
