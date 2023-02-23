@@ -94,3 +94,4 @@ class Capital {
   await capital.authenticate();
   await capital.getAccountList();
 })();
+
