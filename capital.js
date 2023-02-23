@@ -8,7 +8,7 @@ class Capital {
     this._state = state;
 
     this._api = axios.create({
-      baseURL: BASE_URL,
+      baseURL: 'https://demo-api-capital.backend-capital.com',
       headers: {
         'Content-Type': 'application/json',
         'Accept': 'application/json'
@@ -34,7 +34,7 @@ class Capital {
   }
 
   async authenticate() {
-    const { data, headers } = await this.requestAuth('post', '/session', {
+    const { data, headers } = await this.requestAuth('post', '/api/v1/session', {
       encryptedPassword: true,
       password: this._state.encryptedPassword,
       identifier: this._state.email,
@@ -55,7 +55,7 @@ class Capital {
 
     this._state.key = key;
 
-    const { data } = await this.requestAuth('get', '/session/encryptionKey');
+    const { data } = await this.requestAuth('get', '/api/v1/session/encryptionKey');
     const { encryptionKey, timeStamp } = data;
     const encryptionKeyPem = `-----BEGIN PUBLIC KEY-----\n${encryptionKey}\n-----END PUBLIC KEY-----`;
 
@@ -78,9 +78,9 @@ class Capital {
   capital = new Capital();
 
   await capital.activate([
-    'X-CAP-API-KEY_ADD_ME', // key
-    'EMAIL_ADD_ME', // email
-    'PASSWORD_ADD_ME', // password
+    'QjBjQRpkQ8Fxc9Os', // key
+    'tunga3109@gmail.com', // email
+    'Xuxin_10031999', // password
   ]);
 
   // works well
