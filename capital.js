@@ -1,5 +1,4 @@
 
-
 const axios = require('axios');
 const NodeRSA = require('node-rsa');
 
@@ -67,7 +66,7 @@ class Capital {
   }
 
   async getAccountList() {
-    const { data } = await this.request('get', '/accounts');
+    const { data } = await this.request('get', '/api/v1/accounts');
     return data.accounts.filter(item => item.status === 'ENABLED');
   }
 }
