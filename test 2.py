@@ -1,27 +1,8 @@
-import asyncio
-import time
+import requests
 
 
-async def fun1(x):
-    print(x**2)
-    await asyncio.sleep(3)
-    print('fun1 завершена')
 
-
-async def fun2(x):
-    print(x**0.5)
-    await asyncio.sleep(3)
-    print('fun2 завершена')
-
-
-async def main():
-    task1 = asyncio.create_task(fun1(4))
-    task2 = asyncio.create_task(fun2(4))
-
-    await task1
-    await task2
-
-
-print(time.strftime('%X'))
-
-asyncio.run(main())
+res = requests.get(
+    'https://demo-api-capital.backend-capital.com/api/v1/markets?epics=BTCUSD',
+    headers={'CST': CST, 'X-SECURITY-TOKEN': X_SECURITY_TOKEN}
+)
