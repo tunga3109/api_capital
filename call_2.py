@@ -11,9 +11,11 @@ from turtle import Turtle
 import requests
 import pprint
 import sys
-from config import *
 from datetime import datetime
 import json
+
+from config import *
+
 
 BASE_DEMO_URL = 'https://demo-api-capital.backend-capital.com' 
 BASE_LIVE_URL = 'https://api-capital.backend-capital.com'
