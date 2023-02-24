@@ -6,7 +6,7 @@ class Capital {
     this._state = state;
 
     this._api = axios.create({
-      baseURL: BASE_URL,
+      baseURL: 'https://demo-api-capital.backend-capital.com',
       headers: {
         'Content-Type': 'application/json',
         'Accept': 'application/json'
