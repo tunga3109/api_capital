@@ -1,27 +1,17 @@
-import asyncio
-import time
+import requests
+import json
 
+from config import *
+URL = 'https://demo-api-capital.backend-capital.com' #base url
+        
+# Create session
+session = requests.Session()
 
-async def fun1(x):
-    print(x**2)
-    await asyncio.sleep(3)
-    print('fun1 завершена')
+# Returns the user's session details and optionally tokens.
+response = session.post(
+    URL + '/api/v1/session',
+    json={'identifier': login, 'password': password},
+    headers={'X-CAP-API-KEY': API_KEY}
+)
 
-
-async def fun2(x):
-    print(x**0.5)
-    await asyncio.sleep(3)
-    print('fun2 завершена')
-
-
-async def main():
-    task1 = asyncio.create_task(fun1(4))
-    task2 = asyncio.create_task(fun2(4))
-
-    await task1
-    await task2
-
-
-print(time.strftime('%X'))
-
-asyncio.run(main())
+print(response.json())

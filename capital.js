@@ -90,8 +90,8 @@ class Capital {
   await new Promise(resolve => setTimeout(resolve, 1000 * 60 * 10));
 
   // fails on re-authentication attempt :/
-  await capital.authenticate();
-  await capital.getAccountList();
+  // await capital.authenticate();
+  // await capital.getAccountList();
 })();
 
 
