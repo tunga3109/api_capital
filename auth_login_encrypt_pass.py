@@ -4,6 +4,7 @@ API documantation here: https://capital.com/api-development-guide
 '''
 import requests
 import pprint
+import time
 
 from Crypto.Cipher import PKCS1_v1_5
 from Crypto.PublicKey import RSA
@@ -44,7 +45,7 @@ key = RSA.importKey(key)
 cipher = PKCS1_v1_5.new(key)
 ciphertext = b64encode(cipher.encrypt(input))
 enc_pass = ciphertext.decode('utf-8') # Encrypted password
-print(enc_pass)
+
 
 '''
 Go to the POST /session endpoint, set true value for the encryptionKey parameter and mention the received 
@@ -58,7 +59,11 @@ response_1 = session.post(
 
 #print(response_1.status_code) # Checking the status code
 pp = pprint.PrettyPrinter(indent=4)
-#pp.pprint(response_1.json())
+pp.pprint(response_1.json())
 
 print('-' * 100)
 
+
+pp.pprint(response_1.json())
+time.sleep(650)
+pp.pprint(response_1.json())

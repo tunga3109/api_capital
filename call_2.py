@@ -137,14 +137,12 @@ def close_orders():
 
     
 '''Checking prices'''
-def get_prices():
-    epic = input('Paste epic: ')
-    response = session.get(
-        BASE_DEMO_URL + f'/api/v1/prices/{epic}',
-        params={'to':  dt_now_str ,'max': 50, 'resolution': 'MINUTE_5'},
-        headers={'CST': CST, 'X-SECURITY-TOKEN': X_SECURITY_TOKEN}
-    )
-    pp.pprint(response.json())
 
+response = session.get(
+    BASE_DEMO_URL + f'/api/v1/prices/DE40?resolution=MINUTE_5&max=1000&from=2023-02-21T23:00:00&to=2023-02-22T11:00:00',
+    headers={'CST': CST, 'X-SECURITY-TOKEN': X_SECURITY_TOKEN}
+)
 if __name__ == '__main__':
-    search_epic()
+    print(len(response.json()['prices']))
+
+    

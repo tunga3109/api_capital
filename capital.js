@@ -6,7 +6,7 @@ class Capital {
     this._state = state;
 
     this._api = axios.create({
-      baseURL: 'https://demo-api-capital.backend-capital.com',
+      baseURL: 'https://demo-api-capital.backend-capital.com/api/v1',
       headers: {
         'Content-Type': 'application/json',
         'Accept': 'application/json'
@@ -75,20 +75,23 @@ class Capital {
 (async () => {
   capital = new Capital();
 
-  await capital.activate([
-    'X-CAP-API-KEY_ADD_ME', // key
-    'EMAIL_ADD_ME', // email
-    'PASSWORD_ADD_ME', // password
+  a = await capital.activate([
+    'QjBjQRpkQ8Fxc9Os', // key
+    'tunga3109@gmail.com', // email
+    'Xuxin_10031999', // password
   ]);
 
-  // works well
-  await capital.authenticate();
-  await capital.getAccountList(); 
+  
+  console.log(a);
+  // // works well
+  // console.log(await capital.authenticate());
+  // console.log(await capital.getAccountList()); 
 
-  // wait 10+ min
-  await new Promise(resolve => setTimeout(resolve, 1000 * 60 * 10));
+  // // wait 10+ min
+  await new Promise(resolve => setTimeout(resolve, 60 * 10 * 2));
 
-  // fails on re-authentication attempt :/
-  await capital.authenticate();
-  await capital.getAccountList();
+  console.log(a);
+  // // // fails on re-authentication attempt :/
+  // console.log(await capital.authenticate());
+  // console.log(await capital.getAccountList());
 })();
