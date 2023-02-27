@@ -1,6 +1,6 @@
-from capitalcom.client_demo import *
+from capitalcom.client import *
 from config import *
 
 cl = Client(login, password, API_KEY)
 
-print(cl.position_order_confirmation(deal_reference='p_00601567-0055-311e-0000-000080ee0613'))
+print(cl.close_position(dealid='00018509-0055-311e-0000-000080fa363a'))
