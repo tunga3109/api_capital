@@ -75,23 +75,26 @@ class Capital {
 (async () => {
   capital = new Capital();
 
-  a = await capital.activate([
+  await capital.activate([
     'QjBjQRpkQ8Fxc9Os', // key
     'tunga3109@gmail.com', // email
     'Xuxin_10031999', // password
   ]);
 
-  
-  console.log(a);
   // // works well
-  // console.log(await capital.authenticate());
-  // console.log(await capital.getAccountList()); 
+  console.log(await capital.authenticate());
+  console.log(await capital.getAccountList()); 
 
   // // wait 10+ min
-  await new Promise(resolve => setTimeout(resolve, 60 * 10 * 2));
+  await new Promise(resolve => setTimeout(resolve, 1000 * 60 *10));
 
-  console.log(a);
+  await capital.activate([
+    'QjBjQRpkQ8Fxc9Os', // key
+    'tunga3109@gmail.com', // email
+    'Xuxin_10031999', // password
+  ]);
+  
   // // // fails on re-authentication attempt :/
-  // console.log(await capital.authenticate());
-  // console.log(await capital.getAccountList());
+  console.log(await capital.authenticate());
+  console.log(await capital.getAccountList());
 })();
