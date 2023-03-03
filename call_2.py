@@ -144,5 +144,4 @@ response = session.get(
 )
 if __name__ == '__main__':
     print(len(response.json()['prices']))
-
-    
+ 
