@@ -4,8 +4,11 @@ import requests
 from aiogram import Bot, types
 from aiogram.dispatcher import Dispatcher
 from aiogram.utils import executor
+from aiogram.types import ReplyKeyboardMarkup, KeyboardButton
+from aiogram.dispatcher.filters import Text
 
 from config import token, login, password, API_KEY
+from endpoints import close_all_positions
 
 # Initialize bot and dispatcher
 bot = Bot(token=token)
@@ -42,6 +45,26 @@ async def send_weather(message: types.Message):
 
     # Send a message with the weather information
         await bot.send_message(message.chat.id, f'Your current account id is {account_id}')
+
+# Define a handler for the /start command
+@dp.message_handler(commands=['start'])
+async def send_welcome(message: types.Message):
+    # Create a button
+    button = KeyboardButton(text="Close")
+
+    # Create a keyboard markup with the button
+    keyboard = ReplyKeyboardMarkup(resize_keyboard=True).add(button)
+
+    # Send a message with the keyboard
+    await bot.send_message(message.chat.id, "Hello! Click the button below to continue:", reply_markup=keyboard)
+
+@dp.message_handler(Text(equals="Close"))
+async def handle_button_click(message: types.Message):
+    button = KeyboardButton(text="Close all positions")
+
+    # Create a keyboard markup with the button
+    keyboard = ReplyKeyboardMarkup(resize_keyboard=True).add(button)
+    await bot.send_message(message.chat.id, "Click the button below to continue:", reply_markup=keyboard)
 
 # Start the bot
 if __name__ == '__main__':
