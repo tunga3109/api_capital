@@ -160,13 +160,10 @@ import requests
 import json
 
 response = requests.get(
-    'http://127.0.0.1:8000/api/v1/fighter/',
-    params={
-        'character_name': 'Jax'
-    }
+    url = f'https://api.openweathermap.org/data/2.5/weather?q=Minsk&appid=06b2569eb0607ef778ed5e1e9eabd514'
 )
 
-print(json.dumps(response.json(), indent=4, sort_keys=True))
+print(response.json())
         
 
 # http://127.0.0.1:8000/api/v1/fighter/

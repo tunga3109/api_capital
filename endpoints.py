@@ -8,6 +8,7 @@ import sys
 
 import pprint
 from datetime import datetime
+from config import *
 
 #from config import API_KEY, login, password
 
@@ -17,12 +18,12 @@ now = datetime.now() # current date and time
 BASE_DEMO_URL = 'https://demo-api-capital.backend-capital.com' 
 BASE_LIVE_URL = 'https://api-capital.backend-capital.com'
 
-print('------WELCOME TO CAPITAL API----------')
-login = input('YOUR LOGIN: ')
-password = input('YOUR PASSWORD: ')
-api_key = input('YOUR API KEY: ')
-if login == 'q' or password == 'q' or api_key == 'q':
-    sys.exit()
+# print('------WELCOME TO CAPITAL API----------')
+# login = input('YOUR LOGIN: ')
+# password = input('YOUR PASSWORD: ')
+# api_key = input('YOUR API KEY: ')
+# if login == 'q' or password == 'q' or api_key == 'q':
+#     sys.exit()
 
 #UTC time
 utc_datetime  = datetime.utcnow()
@@ -44,7 +45,7 @@ session = requests.Session()
 response = session.post(
     URL + '/api/v1/session',
     json={'identifier': login, 'password': password},
-    headers={'X-CAP-API-KEY': api_key}
+    headers={'X-CAP-API-KEY': API_KEY}
 )
 
 CST = response.headers['CST']
@@ -116,16 +117,16 @@ def main_menu():
             print('TRY AGAIN')
             main_menu()
 
-if response.status_code == 200:
-    CST = response.headers['CST']
-    X_SECURITY_TOKEN = response.headers['X-SECURITY-TOKEN']
+# if response.status_code == 200:
+#     CST = response.headers['CST']
+#     X_SECURITY_TOKEN = response.headers['X-SECURITY-TOKEN']
 
-    print('SUCCESSFULLY')
-    main_menu()
+#     print('SUCCESSFULLY')
+#     main_menu()
     
-else:
-    print('UNSUCCESSFULLY')
-    print('Please double-check credentials'.upper())
+# else:
+#     print('UNSUCCESSFULLY')
+#     print('Please double-check credentials'.upper())
             
 
 
@@ -365,7 +366,12 @@ def close_all_positions():
 #get_prices('BTCUSD')
 
 
+response = session.get(
+    URL + '/api/v1/session',
+    headers={'CST': CST, 'X-SECURITY-TOKEN': X_SECURITY_TOKEN} 
+    )
 
+print(response.json()['accountId'])
 
 
     
