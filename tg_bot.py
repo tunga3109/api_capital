@@ -1,11 +1,15 @@
 import aiohttp
 import asyncio
-import requests
 from aiogram import Bot, types
 from aiogram.dispatcher import Dispatcher
 from aiogram.utils import executor
-from aiogram.types import ReplyKeyboardMarkup, KeyboardButton
+from aiogram.types import ReplyKeyboardMarkup, KeyboardButton, InlineKeyboardButton, InlineKeyboardMarkup, CallbackQuery
 from aiogram.dispatcher.filters import Text
+from aiogram.utils.callback_data import CallbackData
+import json
+
+
+from capitalcom import client_demo, client
 
 from config import token, login, password, API_KEY
 from endpoints import close_all_positions
@@ -14,58 +18,46 @@ from endpoints import close_all_positions
 bot = Bot(token=token)
 dp = Dispatcher(bot)
 
-
-BASE_DEMO_URL = 'https://demo-api-capital.backend-capital.com' 
-
-session = requests.Session() # Create session
-
-'''Returns the user's session details and optionally tokens.'''
-response = session.post(
-    BASE_DEMO_URL + '/api/v1/session',
-    json={"encryptedPassword": False, 'identifier': login, 'password': password},
-    headers={'X-CAP-API-KEY': API_KEY}
-)
-
-CST = response.headers['CST']
-X_SECURITY_TOKEN = response.headers['X-SECURITY-TOKEN']
-
 # Define a command handler
-@dp.message_handler(commands=['check-account'])
-async def send_weather(message: types.Message):
-
-    # Get the city name from the message
-
-    # Make a request to the weather API
-        response = session.get(
-                BASE_DEMO_URL + '/api/v1/session',
-                headers={'CST': CST, 'X-SECURITY-TOKEN': X_SECURITY_TOKEN} 
-                )
-
-        account_id = response.json()['accountId']
-
-    # Send a message with the weather information
-        await bot.send_message(message.chat.id, f'Your current account id is {account_id}')
-
-# Define a handler for the /start command
 @dp.message_handler(commands=['start'])
 async def send_welcome(message: types.Message):
-    # Create a button
-    button = KeyboardButton(text="Close")
 
-    # Create a keyboard markup with the button
-    keyboard = ReplyKeyboardMarkup(resize_keyboard=True).add(button)
+    demo_account_button = KeyboardButton(text="Live account")
+    live_account_button = KeyboardButton(text="Demo account")
 
-    # Send a message with the keyboard
+    keyboard = ReplyKeyboardMarkup(resize_keyboard=True).add(live_account_button, demo_account_button)
+
     await bot.send_message(message.chat.id, "Hello! Click the button below to continue:", reply_markup=keyboard)
 
-@dp.message_handler(Text(equals="Close"))
-async def handle_button_click(message: types.Message):
-    button = KeyboardButton(text="Close all positions")
+@dp.message_handler(Text(equals="Live account"))
+async def live_acc_button_click(message: types.Message):
+    cl = client.Client(login, password, API_KEY)
+    a = json.loads(cl.all_accounts())
+    for acc in a['accounts']:
+        acc_id = acc['accountId']
+        acc_name = acc['accountName']
+        await bot.send_message(message.chat.id, f'{acc_id} - {acc_name}')
+    
+    button1 = InlineKeyboardButton(text="Button 1", callback_data="button1")
+    button2 = InlineKeyboardButton(text="Button 2", callback_data="button2")
 
-    # Create a keyboard markup with the button
-    keyboard = ReplyKeyboardMarkup(resize_keyboard=True).add(button)
-    await bot.send_message(message.chat.id, "Click the button below to continue:", reply_markup=keyboard)
+    # Create the inline keyboard and add the buttons to it
+    keyboard = InlineKeyboardMarkup()
+    keyboard.add(button1, button2)
 
-# Start the bot
+# Send the message with the inline keyboard
+    await bot.send_message(message.chat.id, 'Choose the button', reply_markup=keyboard)
+
+@dp.callback_query_handler(lambda c: c.data == 'button1')
+async def handle_button1(callback_query: CallbackQuery):
+    await bot.send_message(chat_id=callback_query.from_user.id, text="You pressed button 1")
+
+@dp.message_handler(Text(equals="Demo account"))
+async def live_acc_button_click(message: types.Message):
+    city_name = message.text.replace('Demo account ', '')
+    await bot.send_message(message.chat.id, city_name)
+    
+
+
 if __name__ == '__main__':
     executor.start_polling(dp, skip_updates=True)
