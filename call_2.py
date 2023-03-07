@@ -32,7 +32,7 @@ session = requests.Session() # Create session
 
 '''Returns the user's session details and optionally tokens.'''
 response = session.post(
-    BASE_DEMO_URL + '/api/v1/session',
+    BASE_LIVE_URL + '/api/v1/session',
     json={"encryptedPassword": False, 'identifier': login, 'password': password},
     headers={'X-CAP-API-KEY': API_KEY}
 )
@@ -139,9 +139,9 @@ def close_orders():
 '''Checking prices'''
 
 response = session.get(
-    BASE_DEMO_URL + f'/api/v1/prices/DE40?resolution=MINUTE_5&max=1000&from=2023-02-21T23:00:00&to=2023-02-22T11:00:00',
+    BASE_LIVE_URL + f'/api/v1/history/activity?from=2016-01-01T00:00:00&to=2023-03-05T00:00:00&detailed=true&filter=source!=DEALER;type!=POSITION;',
     headers={'CST': CST, 'X-SECURITY-TOKEN': X_SECURITY_TOKEN}
 )
 if __name__ == '__main__':
-    print(len(response.json()['prices']))
+    print(json.dumps(response.json(), indent=4))
  
