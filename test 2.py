@@ -14,4 +14,4 @@ response = session.post(
     headers={'X-CAP-API-KEY': API_KEY}
 )
 
-# print(response.json())
+print(response.json())
