@@ -59,5 +59,5 @@ async def live_acc_button_click(message: types.Message):
     
 
 
-if __name__ == '__main__':
-    executor.start_polling(dp, skip_updates=True)
+# if __name__ == '__main__':
+#     executor.start_polling(dp, skip_updates=True)
