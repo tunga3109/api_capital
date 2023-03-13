@@ -139,7 +139,7 @@ def close_orders():
 '''Checking prices'''
 
 response = session.get(
-    BASE_LIVE_URL + f'/api/v1/history/transactions?from=2023-02-01T00:00:00&to=2023-03-08T00:00:00',
+    BASE_LIVE_URL + f'/api/v1/markets/BTCUSD',
     headers={'CST': CST, 'X-SECURITY-TOKEN': X_SECURITY_TOKEN}
 )
 if __name__ == '__main__':
